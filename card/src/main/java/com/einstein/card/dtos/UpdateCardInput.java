@@ -18,9 +18,5 @@ public class UpdateCardInput {
     private Long totalLimit;
     private Long amountUsed;
     private Long availableAmount;
-    private Date createdAt;
-    private String createdBy;
-    private Date updatedAt;
-    private String updatedBy;
 
 }
