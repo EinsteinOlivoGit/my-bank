@@ -1,6 +1,10 @@
 package com.einstein.card.dtos;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -9,7 +13,7 @@ import lombok.*;
 @ToString
 public class ErrorResponseDto {
     private String apiPath;
-    private String errorCode;
+    private HttpStatus errorCode;
     private String errorMessage;
-    private String errorTime;
+    private LocalDateTime errorTime;
 }

@@ -3,6 +3,7 @@ package com.einstein.card.services.Impl;
 import com.einstein.card.dtos.ConsultCardOutput;
 import com.einstein.card.dtos.CreateCardInput;
 import com.einstein.card.dtos.UpdateCardInput;
+import com.einstein.card.exceptions.CardAlreadyExistException;
 import com.einstein.card.exceptions.ResourceNotFoundException;
 import com.einstein.card.mappers.CardMapper;
 import com.einstein.card.models.Card;
@@ -10,6 +11,8 @@ import com.einstein.card.repositories.CardRepository;
 import com.einstein.card.services.ICardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,10 @@ public class CardService implements ICardService {
 
     @Override
     public void createCard(CreateCardInput dto) {
+        Optional<Card> optionalCard = cardRepository.findByMobileNumber(dto.getMobileNumber());
+        if (optionalCard.isPresent()) {
+            throw new CardAlreadyExistException("Card already exists");
+        }
         Card card = CardMapper.toCard(dto);
         cardRepository.save(card);
     }
@@ -32,7 +39,8 @@ public class CardService implements ICardService {
     @Override
     public boolean updateCard(UpdateCardInput dto) {
         Card card = cardRepository.findByCardNumber(dto.getCardNumber()).orElseThrow(() -> new ResourceNotFoundException("Card", "cardNumber", dto.getCardNumber()));
-        cardRepository.save(CardMapper.toCard(dto));
+        CardMapper.updateCard(card, dto);
+        cardRepository.save(card);
         return true;
     }
 

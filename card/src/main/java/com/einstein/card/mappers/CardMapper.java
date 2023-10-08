@@ -40,4 +40,13 @@ public class CardMapper {
     }
 
 
+    public static Card updateCard(Card card, UpdateCardInput dto) {
+        card.setMobileNumber(dto.getMobileNumber());
+        card.setCardNumber(dto.getCardNumber());
+        card.setCardType(dto.getCardType());
+        card.setTotalLimit(dto.getTotalLimit());
+        card.setAmountUsed(dto.getAmountUsed());
+        card.setAvailableAmount(dto.getAvailableAmount());
+        return card;
+    }
 }
