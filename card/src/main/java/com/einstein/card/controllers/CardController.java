@@ -2,7 +2,6 @@ package com.einstein.card.controllers;
 
 import com.einstein.card.constants.CardConstants;
 import com.einstein.card.dtos.*;
-import com.einstein.card.mappers.CardMapper;
 import com.einstein.card.services.ICardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

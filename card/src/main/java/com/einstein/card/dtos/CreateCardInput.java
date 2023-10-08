@@ -8,8 +8,6 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
-import java.util.Date;
-
 @Schema(
         name = "CraeateCardInput",
         description = "Input for create card"

@@ -28,25 +28,12 @@ public class CardMapper {
                 .build();
     }
 
-    public static Card toCard(UpdateCardInput dto) {
-        return Card.builder()
-                .mobileNumber(dto.getMobileNumber())
-                .cardNumber(dto.getCardNumber())
-                .cardType(dto.getCardType())
-                .totalLimit(dto.getTotalLimit())
-                .amountUsed(dto.getAmountUsed())
-                .availableAmount(dto.getAvailableAmount())
-                .build();
-    }
-
-
-    public static Card updateCard(Card card, UpdateCardInput dto) {
+    public static void updateCard(Card card, UpdateCardInput dto) {
         card.setMobileNumber(dto.getMobileNumber());
         card.setCardNumber(dto.getCardNumber());
         card.setCardType(dto.getCardType());
         card.setTotalLimit(dto.getTotalLimit());
         card.setAmountUsed(dto.getAmountUsed());
         card.setAvailableAmount(dto.getAvailableAmount());
-        return card;
     }
 }

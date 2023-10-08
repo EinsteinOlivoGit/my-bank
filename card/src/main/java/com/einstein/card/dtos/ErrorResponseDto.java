@@ -3,7 +3,6 @@ package com.einstein.card.dtos;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
