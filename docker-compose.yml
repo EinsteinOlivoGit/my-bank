@@ -1,0 +1,26 @@
+services:
+  card:
+    image: "einsteinolivo/card:s4"
+    container_name: card-ms
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - home-work1
+  loan:
+    image: "einsteinolivo/loan:s4"
+    container_name: loan-ms
+    ports:
+      - "8081:8081"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - home-work1
+networks:
+  home-work1:
+    driver: "bridge"
