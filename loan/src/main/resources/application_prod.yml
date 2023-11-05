@@ -1,0 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+
+build:
+  version: v2.0
+  description: 'Version 2.0'

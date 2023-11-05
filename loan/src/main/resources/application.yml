@@ -15,3 +15,14 @@ spring:
   h2:
     console:
       enable: true
+  config:
+    import:
+      - "application_qa.yml"
+      - "application_prod.yml"
+  profiles:
+    active:
+      - "qa"
+
+build:
+  version: v1.1
+  description: 'Version 1.1'

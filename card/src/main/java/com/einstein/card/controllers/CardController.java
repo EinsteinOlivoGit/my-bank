@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class CardController {
 
+    @Value("${build.version}")
+    public String buildVersion;
     private final ICardService cardService;
 
     @Operation(
@@ -155,5 +158,28 @@ public class CardController {
                                                            String mobileNumber) {
         cardService.deleteCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteCardOutput(CardConstants.STATUS_200, CardConstants.MESSAGE_200));
+    }
+
+    @Operation(
+            summary = "Consult Build Version",
+            description = "Consult Build Version",
+            tags = {"Card"}
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
+    @RequestMapping(method = RequestMethod.GET, path = "/version")
+    public ResponseEntity<String> getBuildVersion() {
+        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
     }
 }

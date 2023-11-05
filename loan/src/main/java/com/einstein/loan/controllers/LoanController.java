@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 public class LoanController {
 
     private final ILoanService loanService;
+
+    @Autowired
+    private final BuildDto buildDto;
 
     @Operation(
             summary = "Consult Loan",
@@ -150,6 +154,29 @@ public class LoanController {
                                                        String mobileNumber) {
         loanService.deleteLoan(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteLoanOutput(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
+    }
+
+    @Operation(
+            summary = "Consult Version",
+            description = "Consult Version",
+            tags = {"Loan"}
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
+    @RequestMapping(method = RequestMethod.GET, path = "/version")
+    public ResponseEntity<BuildDto> getBuild() {
+        return ResponseEntity.status(HttpStatus.OK).body(buildDto);
     }
 
 }
