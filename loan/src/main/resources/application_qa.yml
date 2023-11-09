@@ -1,8 +1,0 @@
-spring:
-  config:
-    activate:
-      on-profile: "qa"
-
-build:
-  version: v1.124
-  description: 'Version 1.124'

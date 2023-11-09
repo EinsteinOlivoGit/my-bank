@@ -9,16 +9,19 @@
         <outputRelativeToContentRoot value="true" />
         <module name="card" />
         <module name="loan" />
+        <module name="configserver" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="card" target="17" />
+      <module name="configserver" target="17" />
       <module name="loan" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="card" options="-parameters" />
+      <module name="configserver" options="-parameters" />
       <module name="loan" options="-parameters" />
     </option>
   </component>

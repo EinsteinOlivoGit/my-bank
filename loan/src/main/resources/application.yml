@@ -2,6 +2,10 @@ server:
   port: 8081
 
 spring:
+  application:
+    name: "loan"
+  profiles:
+    active: "prod"
   datasource:
     url: jdbc:h2:mem:testdb2
     driverClassName: org.h2.Driver
@@ -16,13 +20,4 @@ spring:
     console:
       enable: true
   config:
-    import:
-      - "application_qa.yml"
-      - "application_prod.yml"
-  profiles:
-    active:
-      - "qa"
-
-build:
-  version: v1.1
-  description: 'Version 1.1'
+    import: "optional:configserver:http://localhost:8071/"
