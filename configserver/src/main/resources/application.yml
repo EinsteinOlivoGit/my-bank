@@ -1,0 +1,24 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: "configserver"
+  profiles:
+#    active: native
+    active: git
+  cloud:
+    config:
+      server:
+#        native:
+          #search-location2: "classpath:/config"
+#          search-locations: "file:///c://Users//einst//workspace//config//"
+        git:
+          uri: "https://github.com/EinsteinOlivoGit/hw2_config.git"
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+
+encrypt:
+  key: "Y1Kus5843JFx6eZ5RqDL0PUIGjMOJ8"
