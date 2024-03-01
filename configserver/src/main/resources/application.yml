@@ -39,6 +39,30 @@ management:
     health:
       probes:
         enabled: true
+    shutdown:
+      enable: true
+  info:
+    env:
+      enabled: true
+
+endpoints:
+  shutdown:
+    enabled: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "configserver"
+    description: "Example bank application"
+    version: "1.0.0"
 
 encrypt:
   key: "Y1Kus5843JFx6eZ5RqDL0PUIGjMOJ8"
