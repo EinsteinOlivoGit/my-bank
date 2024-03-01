@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,8 +30,8 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class CardController {
 
-    @Value("${build.version}")
-    public String buildVersion;
+    @Autowired
+    private final BuildDto buildDto;
     private final ICardService cardService;
 
     @Operation(
@@ -179,7 +180,7 @@ public class CardController {
             )
     })
     @RequestMapping(method = RequestMethod.GET, path = "/version")
-    public ResponseEntity<String> getBuildVersion() {
-        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    public ResponseEntity<BuildDto> getBuildVersion() {
+        return ResponseEntity.status(HttpStatus.OK).body(buildDto);
     }
 }

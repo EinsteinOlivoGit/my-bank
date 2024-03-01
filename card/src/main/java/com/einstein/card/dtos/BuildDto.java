@@ -1,4 +1,4 @@
-package com.einstein.loan.dtos;
+package com.einstein.card.dtos;
 
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,0 +1,60 @@
+services:
+  rabbit:
+    image: "rabbitmq:3.12-management"
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  configserver:
+    image: "einsteinolivo/configserver:s6"
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-service
+
+  card:
+    image: "einsteinolivo/card:s6"
+    container_name: card-ms
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: "card"
+    extends:
+      file: common-config.yml
+      service: microservice-config-service
+
+  loan:
+    image: "einsteinolivo/loan:s6"
+    container_name: loan-ms
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: "loan"
+    extends:
+      file: common-config.yml
+      service: microservice-config-service
+
+networks:
+  home-work2:
+    driver: "bridge"
