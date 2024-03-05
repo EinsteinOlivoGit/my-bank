@@ -1,8 +1,7 @@
 package com.einstein.loan.services.impl;
 
-import com.einstein.loan.dtos.ConsultLoanOutput;
-import com.einstein.loan.dtos.CreateLoanInput;
-import com.einstein.loan.dtos.UpdateLoanInput;
+import com.einstein.loan.clients.CardFeignClient;
+import com.einstein.loan.dtos.*;
 import com.einstein.loan.exceptions.LoanAlreadyExistException;
 import com.einstein.loan.exceptions.ResourceNotFoundException;
 import com.einstein.loan.mappers.LoanMapper;
@@ -19,6 +18,7 @@ import java.util.Optional;
 public class LoanService implements ILoanService {
 
     private final LoanRepository loanRepository;
+    private final CardFeignClient cardClient;
 
     @Override
     public ConsultLoanOutput consultLoan(String mobileNumber) {
@@ -49,5 +49,13 @@ public class LoanService implements ILoanService {
         Loan loan = loanRepository.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber));
         loanRepository.delete(loan);
         return true;
+    }
+
+    @Override
+    public ConsultCardAndLoanOutput consultCardAndLoan(String mobileNumber) {
+        Loan loan = loanRepository.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber));
+        ConsultLoanOutput loanOutput = LoanMapper.toConsultLoanOutput(loan);
+        ConsultCardOutput cardOutput = cardClient.consultCard(mobileNumber).getBody();
+        return new ConsultCardAndLoanOutput(cardOutput, loanOutput);
     }
 }

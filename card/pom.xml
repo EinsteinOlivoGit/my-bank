@@ -90,7 +90,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>einsteinolivo/${project.artifactId}:s6</image>
+						<image>einsteinolivo/${project.artifactId}:s9</image>
 					</to>
 				</configuration>
 			</plugin>

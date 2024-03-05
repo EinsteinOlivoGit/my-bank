@@ -34,7 +34,7 @@ management:
         include: "*"
   endpoint:
     shutdown:
-      enable: true
+      enabled: true
   info:
     env:
       enabled: true

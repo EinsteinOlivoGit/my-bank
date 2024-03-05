@@ -62,6 +62,39 @@ public class LoanController {
     }
 
     @Operation(
+            summary = "Consult all data",
+            description = "Consult data",
+            tags = {"data"}
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OK"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
+    @RequestMapping(method = RequestMethod.GET, path = "/all")
+    public ResponseEntity<ConsultCardAndLoanOutput> consultData(@Valid @RequestParam
+                                                         @Pattern(regexp = "(^$|[0-9]{9}$)", message = "Mobile number must be 9 digits")
+                                                         String mobileNumber) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(loanService.consultCardAndLoan(mobileNumber));
+    }
+
+    @Operation(
             summary = "Create Loan",
             description = "Create Loan",
             tags = {"Loan"}

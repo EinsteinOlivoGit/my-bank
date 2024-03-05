@@ -16,7 +16,7 @@ services:
       service: network-deploy-service
 
   configserver:
-    image: "einsteinolivo/configserver:s6"
+    image: "einsteinolivo/configserver:s8"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -33,11 +33,44 @@ services:
       file: common-config.yml
       service: microservice-base-service
 
-  card:
-    image: "einsteinolivo/card:s6"
-    container_name: card-ms
+  eurekaserver:
+    image: "einsteinolivo/eurekaserver:s8"
+    container_name: eurekaserver-ms
     ports:
-      - "8080:8080"
+      - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      configserver:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-service
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_APPLICATION_NAME: "eurekaserver"
+
+  card1:
+    image: "einsteinolivo/card:s8"
+    container_name: card-ms1
+    ports:
+      - "18080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: "card"
+    extends:
+      file: common-config.yml
+      service: microservice-config-service
+
+  card2:
+    image: "einsteinolivo/card:s8"
+    container_name: card-ms2
+    ports:
+      - "28080:8080"
     environment:
       SPRING_APPLICATION_NAME: "card"
     extends:
@@ -45,7 +78,7 @@ services:
       service: microservice-config-service
 
   loan:
-    image: "einsteinolivo/loan:s6"
+    image: "einsteinolivo/loan:s8"
     container_name: loan-ms
     ports:
       - "8081:8081"
