@@ -9,6 +9,7 @@ import com.einstein.loan.models.Loan;
 import com.einstein.loan.repositories.LoanRepository;
 import com.einstein.loan.services.ILoanService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,10 +53,14 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public ConsultCardAndLoanOutput consultCardAndLoan(String mobileNumber) {
+    public ConsultCardAndLoanOutput consultCardAndLoan(String correlationId, String mobileNumber) {
         Loan loan = loanRepository.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber));
         ConsultLoanOutput loanOutput = LoanMapper.toConsultLoanOutput(loan);
-        ConsultCardOutput cardOutput = cardClient.consultCard(mobileNumber).getBody();
+        ResponseEntity<ConsultCardOutput> consultCardOutputResponseEntity = cardClient.consultCard(correlationId, mobileNumber);
+        ConsultCardOutput cardOutput = null;
+        if (null != consultCardOutputResponseEntity) {
+            cardOutput = consultCardOutputResponseEntity.getBody();
+        }
         return new ConsultCardAndLoanOutput(cardOutput, loanOutput);
     }
 }

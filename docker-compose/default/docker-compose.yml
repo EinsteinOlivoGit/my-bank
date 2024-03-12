@@ -16,7 +16,7 @@ services:
       service: network-deploy-service
 
   configserver:
-    image: "einsteinolivo/configserver:s8"
+    image: "einsteinolivo/configserver:s9"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -34,7 +34,7 @@ services:
       service: microservice-base-service
 
   eurekaserver:
-    image: "einsteinolivo/eurekaserver:s8"
+    image: "einsteinolivo/eurekaserver:s9"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -55,22 +55,17 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_APPLICATION_NAME: "eurekaserver"
 
-  card1:
-    image: "einsteinolivo/card:s8"
-    container_name: card-ms1
+  card:
+    image: "einsteinolivo/card:s9"
+    container_name: card-ms
     ports:
-      - "18080:8080"
-    environment:
-      SPRING_APPLICATION_NAME: "card"
-    extends:
-      file: common-config.yml
-      service: microservice-config-service
-
-  card2:
-    image: "einsteinolivo/card:s8"
-    container_name: card-ms2
-    ports:
-      - "28080:8080"
+      - "8080:8080"
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
     environment:
       SPRING_APPLICATION_NAME: "card"
     extends:
@@ -78,12 +73,34 @@ services:
       service: microservice-config-service
 
   loan:
-    image: "einsteinolivo/loan:s8"
+    image: "einsteinolivo/loan:s9"
     container_name: loan-ms
     ports:
       - "8081:8081"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
     environment:
       SPRING_APPLICATION_NAME: "loan"
+    extends:
+      file: common-config.yml
+      service: microservice-config-service
+
+  gatewayserver:
+    image: "einsteinolivo/gatewayserver:s9"
+    container_name: gatewayserver-ms
+    ports:
+      - "8072:8072"
+    depends_on:
+      card:
+        condition: service_healthy
+      loan:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
     extends:
       file: common-config.yml
       service: microservice-config-service

@@ -26,13 +26,27 @@ spring:
     port: 5672
     username: "guest"
     password: "guest"
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
+    health:
+      probes:
+        enabled: true
     shutdown:
       enabled: true
   info:
@@ -57,3 +71,17 @@ info:
     name: "loan"
     description: "Example bank application"
     version: "1.0.0"
+
+logging:
+  level:
+    com:
+      einstein:
+        loan: Debug
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 2
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000

@@ -40,7 +40,7 @@ management:
       probes:
         enabled: true
     shutdown:
-      enable: true
+      enabled: true
   info:
     env:
       enabled: true

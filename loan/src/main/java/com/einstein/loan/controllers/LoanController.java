@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Validated
 public class LoanController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoanController.class);
 
     private final ILoanService loanService;
 
@@ -55,9 +59,11 @@ public class LoanController {
             )
     })
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<ConsultLoanOutput> consultLoan(@Valid @RequestParam
+    public ResponseEntity<ConsultLoanOutput> consultLoan(@RequestHeader("myBank-correlation-id") String correlationId,
+                                                         @Valid @RequestParam
                                                              @Pattern(regexp = "(^$|[0-9]{9}$)", message = "Mobile number must be 9 digits")
                                                              String mobileNumber) {
+        logger.debug("myBank-correlation-id found: {} ", correlationId);
         return ResponseEntity.status(HttpStatus.OK).body(loanService.consultLoan(mobileNumber));
     }
 
@@ -87,11 +93,12 @@ public class LoanController {
             )
     })
     @RequestMapping(method = RequestMethod.GET, path = "/all")
-    public ResponseEntity<ConsultCardAndLoanOutput> consultData(@Valid @RequestParam
+    public ResponseEntity<ConsultCardAndLoanOutput> consultData(@RequestHeader("myBank-correlation-id") String correlationId,
+                                                                @Valid @RequestParam
                                                          @Pattern(regexp = "(^$|[0-9]{9}$)", message = "Mobile number must be 9 digits")
                                                          String mobileNumber) {
-
-        return ResponseEntity.status(HttpStatus.OK).body(loanService.consultCardAndLoan(mobileNumber));
+        logger.debug("myBank-correlation-id found: {} ", correlationId);
+        return ResponseEntity.status(HttpStatus.OK).body(loanService.consultCardAndLoan(correlationId, mobileNumber));
     }
 
     @Operation(
@@ -120,7 +127,9 @@ public class LoanController {
             )
     })
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateLoanOutput> createLoan(@Valid @RequestBody CreateLoanInput dto) {
+    public ResponseEntity<CreateLoanOutput> createLoan(@RequestHeader("myBank-correlation-id") String correlationId,
+                                                       @Valid @RequestBody CreateLoanInput dto) {
+        logger.debug("myBank-correlation-id found: {} ", correlationId);
         loanService.createLoan(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CreateLoanOutput(LoanConstants.STATUS_201, LoanConstants.MESSAGE_201));
     }
@@ -151,7 +160,9 @@ public class LoanController {
             )
     })
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<UpdateLoanOutput> updateLoan(@Valid @RequestBody UpdateLoanInput dto) {
+    public ResponseEntity<UpdateLoanOutput> updateLoan(@RequestHeader("myBank-correlation-id") String correlationId,
+                                                       @Valid @RequestBody UpdateLoanInput dto) {
+        logger.debug("myBank-correlation-id found: {} ", correlationId);
         loanService.updateLoan(dto);
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateLoanOutput(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
     }
@@ -182,9 +193,11 @@ public class LoanController {
             )
     })
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<DeleteLoanOutput> deleteLoan(@Valid @RequestParam
+    public ResponseEntity<DeleteLoanOutput> deleteLoan(@RequestHeader("myBank-correlation-id") String correlationId,
+                                                       @Valid @RequestParam
                                                        @Pattern(regexp = "(^$|[0-9]{9}$)", message = "Mobile number must be 9 digits")
                                                        String mobileNumber) {
+        logger.debug("myBank-correlation-id found: {} ", correlationId);
         loanService.deleteLoan(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteLoanOutput(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
     }
@@ -208,7 +221,8 @@ public class LoanController {
             )
     })
     @RequestMapping(method = RequestMethod.GET, path = "/version")
-    public ResponseEntity<BuildDto> getBuild() {
+    public ResponseEntity<BuildDto> getBuild(@RequestHeader("myBank-correlation-id") String correlationId) {
+        logger.debug("myBank-correlation-id found: {} ", correlationId);
         return ResponseEntity.status(HttpStatus.OK).body(buildDto);
     }
 

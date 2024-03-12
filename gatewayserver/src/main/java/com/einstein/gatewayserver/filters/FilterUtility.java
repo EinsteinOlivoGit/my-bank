@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class FilterUtility {
 
-    public static final String CORRELATION_ID = "mybank-correlation-id";
+    public static final String CORRELATION_ID = "myBank-correlation-id";
 
     public String getCorrelationId(HttpHeaders requestHeaders) {
         if (requestHeaders.get(CORRELATION_ID) != null) {

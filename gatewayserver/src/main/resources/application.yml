@@ -32,3 +32,17 @@ info:
     name: "gatewayserver"
     description: "Api gateway"
     version: "1.0.0"
+
+logging:
+  level:
+    com:
+      einstein:
+        gatewayserver: Debug
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 2
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000

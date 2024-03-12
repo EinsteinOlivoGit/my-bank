@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class RequestTraceFilter implements GlobalFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger("RequestTraceFilter");
+    private static final Logger logger = LoggerFactory.getLogger(RequestTraceFilter.class);
 
     @Autowired
     private FilterUtility filterUtility;
@@ -28,7 +28,7 @@ public class RequestTraceFilter implements GlobalFilter {
         } else {
             String correlationID = generateCorrelationId();
             exchange = filterUtility.setCorrelationId(exchange, correlationID);
-            logger.debug("eazyBank-correlation-id generated in RequestTraceFilter : {}", correlationID);
+            logger.debug("myBank-correlation-id generated in RequestTraceFilter : {}", correlationID);
         }
         return chain.filter(exchange);
     }
