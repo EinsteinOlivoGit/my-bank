@@ -3,17 +3,33 @@ spring:
     name: "gatewayserver"
   config:
     import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 10s
 #  cloud:
 #    gateway:
 #      discovery:
 #        locator:
 #          enabled: true
 #          lowerCaseServiceId: true
+  data:
+    redis:
+      connect-timeout: 2s
+      host: localhost
+      port: 6379
+      timeout: 1s
   rabbitmq:
     host: "localhost"
     port: 5672
     username: "guest"
     password: "guest"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:7080/realms/master/protocol/openid-connect/certs"
 
 management:
   endpoints:
@@ -26,6 +42,9 @@ management:
   info:
     env:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 info:
   app:
@@ -38,6 +57,8 @@ logging:
     com:
       einstein:
         gatewayserver: Debug
+  pattern:
+    level: "%5p <${spring.application.name}><%X{trace_id}><%X{span_id}>"
 
 resilience4j.circuitbreaker:
   configs:
@@ -46,3 +67,4 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 2
       failureRateThreshold: 50
       waitDurationInOpenState: 10000
+

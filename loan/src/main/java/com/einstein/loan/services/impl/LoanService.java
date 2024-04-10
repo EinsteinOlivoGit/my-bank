@@ -53,10 +53,10 @@ public class LoanService implements ILoanService {
     }
 
     @Override
-    public ConsultCardAndLoanOutput consultCardAndLoan(String correlationId, String mobileNumber) {
+    public ConsultCardAndLoanOutput consultCardAndLoan(String mobileNumber) {
         Loan loan = loanRepository.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber));
         ConsultLoanOutput loanOutput = LoanMapper.toConsultLoanOutput(loan);
-        ResponseEntity<ConsultCardOutput> consultCardOutputResponseEntity = cardClient.consultCard(correlationId, mobileNumber);
+        ResponseEntity<ConsultCardOutput> consultCardOutputResponseEntity = cardClient.consultCard(mobileNumber);
         ConsultCardOutput cardOutput = null;
         if (null != consultCardOutputResponseEntity) {
             cardOutput = consultCardOutputResponseEntity.getBody();

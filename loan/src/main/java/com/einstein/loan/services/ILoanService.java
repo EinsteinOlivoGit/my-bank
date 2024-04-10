@@ -12,5 +12,5 @@ public interface ILoanService {
     boolean updateLoan(UpdateLoanInput dto);
     boolean deleteLoan(String mobileNumber);
 
-    ConsultCardAndLoanOutput consultCardAndLoan(String correlationId, String mobileNumber);
+    ConsultCardAndLoanOutput consultCardAndLoan(String mobileNumber);
 }

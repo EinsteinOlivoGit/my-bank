@@ -44,6 +44,9 @@ management:
   info:
     env:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 endpoints:
   shutdown:
@@ -66,3 +69,7 @@ info:
 
 encrypt:
   key: "Y1Kus5843JFx6eZ5RqDL0PUIGjMOJ8"
+
+logging:
+  pattern:
+    level: "%5p <${spring.application.name}><%X{trace_id}><%X{span_id}>"

@@ -63,12 +63,15 @@ public class CardController {
             )
     })
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<ConsultCardOutput> consultCard(@RequestHeader("myBank-correlation-id") String correlationId,
-                                                            @Valid @RequestParam
+    public ResponseEntity<ConsultCardOutput> consultCard(@Valid @RequestParam
                                                              @Pattern(regexp = "(^$|[0-9]{9}$)", message = "Mobile number must be 9 digits")
                                                              String mobileNumber) {
-        logger.debug("myBank-correlation-id found: {} ", correlationId);
-        return ResponseEntity.status(HttpStatus.OK).body(cardService.consultCard(mobileNumber));
+        logger.debug("Entering consultCard");
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(cardService.consultCard(mobileNumber));
+        } finally {
+            logger.debug("Exiting consultCard");
+        }
     }
 
     @Operation(
@@ -97,11 +100,14 @@ public class CardController {
             )
     })
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateCardOutput> createCard(@RequestHeader("myBank-correlation-id") String correlationId,
-            @Valid @RequestBody CreateCardInput dto) {
-        logger.debug("myBank-correlation-id found: {} ", correlationId);
+    public ResponseEntity<CreateCardOutput> createCard(@Valid @RequestBody CreateCardInput dto) {
+        logger.debug("Entering createCard");
         cardService.createCard(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateCardOutput(CardConstants.STATUS_201, CardConstants.MESSAGE_201));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(new CreateCardOutput(CardConstants.STATUS_201, CardConstants.MESSAGE_201));
+        } finally {
+            logger.debug("Exiting getBuildVersion");
+        }
     }
 
     @Operation(
@@ -130,11 +136,14 @@ public class CardController {
             )
     })
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<UpdateCardOutput> updateCard(@RequestHeader("myBank-correlation-id") String correlationId,
-            @Valid @RequestBody UpdateCardInput dto) {
-        logger.debug("myBank-correlation-id found: {} ", correlationId);
+    public ResponseEntity<UpdateCardOutput> updateCard(@Valid @RequestBody UpdateCardInput dto) {
+        logger.debug("Entering updateCard");
         cardService.updateCard(dto);
-        return ResponseEntity.status(HttpStatus.OK).body(new UpdateCardOutput(CardConstants.STATUS_200, CardConstants.MESSAGE_200));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(new UpdateCardOutput(CardConstants.STATUS_200, CardConstants.MESSAGE_200));
+        } finally {
+            logger.debug("Exiting updateCard");
+        }
     }
 
     @Operation(
@@ -163,13 +172,16 @@ public class CardController {
             )
     })
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<DeleteCardOutput> deleteCard(@RequestHeader("myBank-correlation-id") String correlationId,
-                                                           @Valid @RequestParam
+    public ResponseEntity<DeleteCardOutput> deleteCard(@Valid @RequestParam
                                                            @Pattern(regexp = "(^$|[0-9]{9}$)", message = "Mobile number must be 9 digits")
                                                            String mobileNumber) {
-        logger.debug("myBank-correlation-id found: {} ", correlationId);
+        logger.debug("Entering deleteCard");
         cardService.deleteCard(mobileNumber);
-        return ResponseEntity.status(HttpStatus.OK).body(new DeleteCardOutput(CardConstants.STATUS_200, CardConstants.MESSAGE_200));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(new DeleteCardOutput(CardConstants.STATUS_200, CardConstants.MESSAGE_200));
+        } finally {
+            logger.debug("Exiting deleteCard");
+        }
     }
 
     @Operation(
@@ -191,8 +203,12 @@ public class CardController {
             )
     })
     @RequestMapping(method = RequestMethod.GET, path = "/version")
-    public ResponseEntity<BuildDto> getBuildVersion(@RequestHeader("myBank-correlation-id") String correlationId) {
-        logger.debug("myBank-correlation-id found: {} ", correlationId);
-        return ResponseEntity.status(HttpStatus.OK).body(buildDto);
+    public ResponseEntity<BuildDto> getBuildVersion() {
+        logger.debug("Entering getBuildVersion");
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(buildDto);
+        } finally {
+            logger.debug("Exiting getBuildVersion");
+        }
     }
 }
