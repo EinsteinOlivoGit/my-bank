@@ -8,6 +8,9 @@ services:
       service: network-deploy-service
     environment:
       SPRING_RABBITMQ_HOST: "rabbit"
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.27.0.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
     deploy:
       resources:
         limits:
@@ -16,11 +19,6 @@ services:
   microservice-config-service:
     extends:
       service: microservice-base-service
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
     environment:
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
       SPRING_PROFILES_ACTIVE: qa
