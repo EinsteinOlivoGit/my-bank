@@ -59,6 +59,7 @@ logging:
         gatewayserver: Debug
   pattern:
     level: "%5p <${spring.application.name}><%X{trace_id}><%X{span_id}>"
+  # TODO: investigar porque no funciona en el local y si en el docker
 
 resilience4j.circuitbreaker:
   configs:
