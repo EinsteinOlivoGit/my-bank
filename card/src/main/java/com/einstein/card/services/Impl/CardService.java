@@ -65,4 +65,12 @@ public class CardService implements ICardService {
         cardRepository.delete(card);
         return true;
     }
+
+    @Override
+    public boolean updateCommunicationSent(String cardNumber) {
+        Card card = cardRepository.findByCardNumber(cardNumber).orElseThrow(() -> new ResourceNotFoundException("Card", "cardNumber", cardNumber));
+        card.setCommunicationSent(true);
+        cardRepository.save(card);
+        return true;
+    }
 }

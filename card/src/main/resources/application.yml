@@ -28,10 +28,15 @@ spring:
     password: "guest"
     connection-timeout: 10s
   cloud:
+    function:
+      definition: updateCommunicationSent
     stream:
       bindings:
         sendCommunication-out-0:
           destination: send-communication
+        updateCommunicationSent-in-0:
+          destination: communication-sent
+          group: ${spring.application.name}
 
 management:
   endpoints:

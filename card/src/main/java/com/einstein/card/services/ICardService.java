@@ -29,4 +29,10 @@ public interface ICardService {
      * @return A boolean to specifier the result
      */
     boolean deleteCard(String mobileNumber);
+
+    /**
+     * @param cardNumber
+     * @return A boolenan to specifier the result
+     */
+    boolean updateCommunicationSent(String cardNumber);
 }

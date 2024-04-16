@@ -22,7 +22,7 @@ public class MessageFunction {
     }
 
     @Bean
-    public Function<CardMsgDto, Long> sms() {
+    public Function<CardMsgDto, String> sms() {
         return x -> {
             logger.info("Sending sms: " + x);
             return x.cardNumber();

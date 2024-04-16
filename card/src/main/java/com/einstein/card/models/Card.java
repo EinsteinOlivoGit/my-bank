@@ -25,5 +25,6 @@ public class Card extends BaseEntity {
     private Long totalLimit;
     private Long amountUsed;
     private Long availableAmount;
+    private boolean communicationSent;
 
 }
