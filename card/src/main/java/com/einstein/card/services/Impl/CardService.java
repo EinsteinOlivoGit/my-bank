@@ -1,5 +1,6 @@
 package com.einstein.card.services.Impl;
 
+import com.einstein.card.dtos.CardMsgDto;
 import com.einstein.card.dtos.ConsultCardOutput;
 import com.einstein.card.dtos.CreateCardInput;
 import com.einstein.card.dtos.UpdateCardInput;
@@ -10,6 +11,9 @@ import com.einstein.card.models.Card;
 import com.einstein.card.repositories.CardRepository;
 import com.einstein.card.services.ICardService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,7 +22,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CardService implements ICardService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CardService.class);
+
     private final CardRepository cardRepository;
+    private final StreamBridge streamBridge;
 
     @Override
     public void createCard(CreateCardInput dto) {
@@ -27,7 +34,15 @@ public class CardService implements ICardService {
             throw new CardAlreadyExistException("Card already exists");
         }
         Card card = CardMapper.toCard(dto);
-        cardRepository.save(card);
+        Card cardSaved = cardRepository.save(card);
+        sendCommunication(cardSaved);
+    }
+
+    private void sendCommunication(Card card) {
+        var cardMsgDto = new CardMsgDto(Long.parseLong(card.getCardNumber()), "Miguel", "miguel69@gmail.com", card.getMobileNumber());
+        logger.info("Sending communication: {}", cardMsgDto);
+        var result = streamBridge.send("sendCommunication-out-0", cardMsgDto);
+        logger.info("Communication sent, response: {}", result);
     }
 
     @Override

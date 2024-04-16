@@ -229,7 +229,7 @@ services:
       service: network-deploy-service
 
   configserver:
-    image: "einsteinolivo/configserver:s12"
+    image: "einsteinolivo/configserver:s13"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -249,7 +249,7 @@ services:
       OTEL_SERVICE_NAME: "configserver"
 
   eurekaserver:
-    image: "einsteinolivo/eurekaserver:s12"
+    image: "einsteinolivo/eurekaserver:s13"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -272,7 +272,7 @@ services:
       OTEL_SERVICE_NAME: "eurekaserver"
 
   card:
-    image: "einsteinolivo/card:s12"
+    image: "einsteinolivo/card:s13"
     container_name: card-ms
     ports:
       - "8080:8080"
@@ -295,7 +295,7 @@ services:
       service: microservice-config-service
 
   loan:
-    image: "einsteinolivo/loan:s12"
+    image: "einsteinolivo/loan:s13"
     container_name: loan-ms
     ports:
       - "8081:8081"
@@ -318,7 +318,7 @@ services:
       service: microservice-config-service
 
   gatewayserver:
-    image: "einsteinolivo/gatewayserver:s12"
+    image: "einsteinolivo/gatewayserver:s13"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"

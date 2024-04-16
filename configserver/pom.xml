@@ -79,7 +79,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>einsteinolivo/${project.artifactId}:s12</image>
+						<image>einsteinolivo/${project.artifactId}:s13</image>
 					</to>
 				</configuration>
 			</plugin>
