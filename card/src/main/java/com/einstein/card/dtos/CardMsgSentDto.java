@@ -1,4 +1,4 @@
 package com.einstein.card.dtos;
 
-public record CardMsgSentDto(Long cardNumber) {
+public record CardMsgSentDto(String cardNumber) {
 }
