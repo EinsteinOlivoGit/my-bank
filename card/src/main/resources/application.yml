@@ -18,15 +18,9 @@ spring:
     show-sql: true
   h2:
     console:
-      enable: true
+      enabled: true
   config:
     import: "optional:configserver:http://localhost:8071/"
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
-    connection-timeout: 10s
   cloud:
     function:
       definition: updateCommunicationSent
@@ -37,6 +31,10 @@ spring:
         updateCommunicationSent-in-0:
           destination: communication-sent
           group: ${spring.application.name}
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
 
 management:
   endpoints:

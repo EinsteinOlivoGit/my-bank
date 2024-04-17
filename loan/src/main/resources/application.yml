@@ -18,14 +18,9 @@ spring:
     show-sql: true
   h2:
     console:
-      enable: true
+      enabled: true
   config:
     import: "optional:configserver:http://localhost:8071/"
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
   cloud:
     openfeign:
       circuitbreaker:
