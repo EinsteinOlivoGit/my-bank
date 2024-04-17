@@ -212,14 +212,13 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
-  rabbit:
-    image: "rabbitmq:3.12-management"
-    container_name: rabbitmq
+  kafka:
+    image: "apache/kafka:3.7.0"
+    container_name: kafka
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "9092:9092"
     healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
+      test: nc -z localhost 9092 || exit -1
       interval: 10s
       timeout: 5s
       retries: 10
@@ -240,7 +239,7 @@ services:
       retries: 10
       start_period: 5s
     depends_on:
-      rabbit:
+      kafka:
         condition: service_healthy
     extends:
       file: common-config.yml
@@ -290,6 +289,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "card"
       OTEL_SERVICE_NAME: "card"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: - kafka:9092
     extends:
       file: common-config.yml
       service: microservice-config-service
@@ -316,6 +316,23 @@ services:
     extends:
       file: common-config.yml
       service: microservice-config-service
+      
+    message:
+      image: "einsteinolivo/message:s13"
+      container_name: message-ms
+      ports:
+        - 9010:9010
+      depends_on:
+        configserver:
+          condition: service_healthy
+        eurekaserver:
+          condition: service_healthy
+      environment:
+        SPRING_APPLICATION_NAME: "message"
+        SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: - kafka:9092
+      extends:
+        file: common-config.yml
+        service: microservice-config-service
 
   gatewayserver:
     image: "einsteinolivo/gatewayserver:s13"
