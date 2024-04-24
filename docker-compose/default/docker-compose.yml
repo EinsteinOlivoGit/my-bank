@@ -212,17 +212,45 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+#  kafka:
+#    image: "apache/kafka:3.7.0"
+#    container_name: kafka
+#    ports:
+#      - "9092:9092"
+#    healthcheck:
+#      test: nc -z localhost 9092 || exit -1
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 5s
+#    extends:
+#      file: common-config.yml
+#      service: network-deploy-service
+
   kafka:
-    image: "apache/kafka:3.7.0"
+    image: docker.io/bitnami/kafka:3.7
     container_name: kafka
     ports:
       - "9092:9092"
-    healthcheck:
-      test: nc -z localhost 9092 || exit -1
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
+    volumes:
+      - "kafka_data:/bitnami"
+#    healthcheck:
+#      test: nc -z localhost 9092 || exit -1
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 5s
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -238,14 +266,16 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
-    depends_on:
-      kafka:
-        condition: service_healthy
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-base-service
     environment:
       OTEL_SERVICE_NAME: "configserver"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: "kafka:9092"
 
   eurekaserver:
     image: "einsteinolivo/eurekaserver:s13"
@@ -269,6 +299,7 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_APPLICATION_NAME: "eurekaserver"
       OTEL_SERVICE_NAME: "eurekaserver"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
 
   card:
     image: "einsteinolivo/card:s13"
@@ -289,7 +320,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "card"
       OTEL_SERVICE_NAME: "card"
-      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: - kafka:9092
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: microservice-config-service
@@ -313,26 +344,27 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "loan"
       OTEL_SERVICE_NAME: "loan"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: microservice-config-service
       
-    message:
-      image: "einsteinolivo/message:s13"
-      container_name: message-ms
-      ports:
-        - 9010:9010
-      depends_on:
-        configserver:
-          condition: service_healthy
-        eurekaserver:
-          condition: service_healthy
-      environment:
-        SPRING_APPLICATION_NAME: "message"
-        SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: - kafka:9092
-      extends:
-        file: common-config.yml
-        service: microservice-config-service
+  message:
+    image: "einsteinolivo/message:s13"
+    container_name: message-ms
+    ports:
+      - 9010:9010
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "message"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   gatewayserver:
     image: "einsteinolivo/gatewayserver:s13"
@@ -352,9 +384,14 @@ services:
       SPRING_APPLICATION_NAME: "gatewayserver"
       OTEL_SERVICE_NAME: "gatewayserver"
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://authserver:8080/realms/master/protocol/openid-connect/certs"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: microservice-config-service
+
+volumes:
+  kafka_data:
+    driver: local
 
 networks:
   home-work2:

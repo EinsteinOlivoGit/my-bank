@@ -19,6 +19,11 @@ spring:
           timeout: 5
           clone-on-start: true
           force-pull: true
+    stream:
+      kafka:
+        binder:
+          brokers:
+            - kafka:9092
 
 management:
   endpoints:

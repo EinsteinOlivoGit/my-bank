@@ -39,7 +39,7 @@ public class CardService implements ICardService {
     }
 
     private void sendCommunication(Card card) {
-        var cardMsgDto = new CardMsgDto(Long.parseLong(card.getCardNumber()), "Miguel", "miguel69@gmail.com", card.getMobileNumber());
+        var cardMsgDto = new CardMsgDto(card.getCardNumber(), "Miguel", "miguel69@gmail.com", card.getMobileNumber());
         logger.info("Sending communication: {}", cardMsgDto);
         var result = streamBridge.send("sendCommunication-out-0", cardMsgDto);
         logger.info("Communication sent, response: {}", result);
