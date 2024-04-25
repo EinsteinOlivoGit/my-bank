@@ -212,21 +212,6 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
-#  kafka:
-#    image: "apache/kafka:3.7.0"
-#    container_name: kafka
-#    ports:
-#      - "9092:9092"
-#    healthcheck:
-#      test: nc -z localhost 9092 || exit -1
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 5s
-#    extends:
-#      file: common-config.yml
-#      service: network-deploy-service
-
   kafka:
     image: docker.io/bitnami/kafka:3.7
     container_name: kafka
@@ -234,12 +219,6 @@ services:
       - "9092:9092"
     volumes:
       - "kafka_data:/bitnami"
-#    healthcheck:
-#      test: nc -z localhost 9092 || exit -1
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 5s
     environment:
       # KRaft settings
       - KAFKA_CFG_NODE_ID=0
@@ -266,9 +245,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-base-service
